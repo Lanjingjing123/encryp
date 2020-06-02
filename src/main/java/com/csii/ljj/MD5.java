@@ -45,11 +45,13 @@ public class MD5 {
      * 2.使用开发的jar直接应用
      *  使用外部的jar包中的类：import org.apache.commons.codec.digest.DigestUtils;
      *  对上面内容的一个封装使用方便
+     *  返回16位
      */
-    public static void encrypByMd5Jar(String context) {
+    public static String encrypByMd5Jar(String context) {
         String md5Str = DigestUtils.md5Hex(context);
 
-        System.out.println("32resultByjar: " + md5Str.toUpperCase());
+        System.out.println("32resultByjar: " + md5Str.toUpperCase().substring(8,24));
+        return md5Str.toUpperCase().substring(8,24);
     }
 
     public static void main(String[] args) throws Exception {

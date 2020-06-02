@@ -173,16 +173,20 @@ public class TestRSA {
             String publicKey = new String(Base64.encodeBase64(keyPair.getPublic().getEncoded()));
             System.out.println("私钥:" + privateKey);
             System.out.println("公钥:" + publicKey);
-            // RSA加密
-            String data = "待加密的文字内容";
-            String encryptData = encrypt(data, getPublicKey(publicKey));
-            System.out.println("加密后内容:" + encryptData);
-            // RSA解密
-            String decryptData = decrypt(encryptData, getPrivateKey(privateKey));
-            System.out.println("解密后内容:" + decryptData);
+//            // RSA加密
+//            String data = "待加密的文字内容";
+//            String encryptData = encrypt(data, getPublicKey(publicKey));
+//            System.out.println("加密后内容:" + encryptData);
+//            // RSA解密
+//            String decryptData = decrypt(encryptData, getPrivateKey(privateKey));
+//            System.out.println("解密后内容:" + decryptData);
+
+
+            String data = MD5.encrypByMd5Jar("ABCD1234ADSJFLAS");
 
             // RSA签名
             String sign = sign(data, getPrivateKey(privateKey));
+            System.out.println("签名："+sign);
             // RSA验签
             boolean result = verify(data, getPublicKey(publicKey), sign);
             System.out.print("验签结果:" + result);
