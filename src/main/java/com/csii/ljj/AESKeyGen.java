@@ -1,14 +1,20 @@
 package com.csii.ljj;
 
 import org.apache.commons.codec.binary.Base64;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 public class AESKeyGen {
+
+    private static String ivs = "0392039203920300";
     /**
      * 自动生成AES128位密钥
      */
@@ -16,7 +22,7 @@ public class AESKeyGen {
         String s1 = null;
         try {
             KeyGenerator kg = KeyGenerator.getInstance("AES");
-            kg.init(128);//要生成多少位，只需要修改这里即可128, 192或256
+            kg.init(128,new SecureRandom());//要生成多少位，只需要修改这里即可128, 192或256
             SecretKey sk = kg.generateKey();
             byte[] b = sk.getEncoded();
 
@@ -25,13 +31,10 @@ public class AESKeyGen {
             System.out.println("十六进制密钥长度为"+s.length());
             System.out.println("二进制密钥的长度为"+s.length()*4);
 
-            System.out.println("=============:"+new String(b));
+
             s1 = Base64.encodeBase64String(b);
             System.out.println("base64:"+s1);
             System.out.println(s1.length());
-            String s2 = Base64.encodeBase64URLSafeString(b);
-            System.out.println("s2:"+s2);
-
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -79,37 +82,50 @@ public class AESKeyGen {
     /**
      * 使用对称密钥进行加密
      */
-    public static void getA231() throws Exception{
-        String keys = "c0e9fcff59ecc3b8b92939a1a2724a44";	//密钥
-        byte[] keyb = hexStringToByte(keys);
-        String mingwen = "hello word!";							//明文
+    public static String  getA231(byte[] keyb) throws Exception{
+
+        String mingwen = "hello word!世界你好";
+        System.out.println("原文："+mingwen);//明文
         SecretKeySpec sKeySpec = new SecretKeySpec(keyb, "AES");
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, sKeySpec);
-        byte[] bjiamihou = cipher.doFinal(mingwen.getBytes());
-        System.out.println(byteToHexString(bjiamihou));		//加密后数据为ecf0a6bc80dbaf657eac9b06ecd92962
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+
+        IvParameterSpec iv = new IvParameterSpec(ivs.getBytes());//向量iv
+        cipher.init(Cipher.ENCRYPT_MODE, sKeySpec,iv);
+        byte[] bjiamihou = cipher.doFinal(mingwen.getBytes("UTF-8"));
+
+        String encreptContent = Base64.encodeBase64String(bjiamihou);
+        System.out.println("BASE64 ENCRPT:"+encreptContent);
+        return encreptContent;
     }
 
     /**
-     * 使用对称密钥进行解密
+     * 解密
+     * @param keyb 二进制秘钥
+     * @param encrptContent 经过Base64转码之后的密文
+     * @throws Exception
      */
-    public static void getA232() throws Exception{
-        String keys = "c0e9fcff59ecc3b8b92939a1a2724a44";	//密钥
-        byte[] keyb = hexStringToByte(keys);
-        String sjiami = "ecf0a6bc80dbaf657eac9b06ecd92962";	//密文
-        byte[] miwen = hexStringToByte(sjiami);
+    public static void getA232(byte[] keyb,String encrptContent) throws Exception{
+
+        String sjiami = encrptContent;	//密文
+
+        byte[] miwen = Base64.decodeBase64(sjiami);// 先将密文转码
         SecretKeySpec sKeySpec = new SecretKeySpec(keyb, "AES");
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.DECRYPT_MODE, sKeySpec);
+        IvParameterSpec iv = new IvParameterSpec(ivs.getBytes());//使用CBC模式需要添加向量iv,非CBC可以不用增加向量IV
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, sKeySpec,iv);
+
         byte[] bjiemihou = cipher.doFinal(miwen);
-        System.out.println(new String(bjiemihou));
+        System.out.println("Decrpt:"+new String(bjiemihou));
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         String key = getA221();
         byte[] bytes = Base64.decodeBase64(key);
-
+        // 加密
+        String encrptContent = getA231(bytes);
+        // 解密
+        getA232(bytes,encrptContent);
 
     }
 }
