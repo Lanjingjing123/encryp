@@ -22,7 +22,7 @@ public class AESKeyGen {
         String s1 = null;
         try {
             KeyGenerator kg = KeyGenerator.getInstance("AES");
-            kg.init(128,new SecureRandom());//要生成多少位，只需要修改这里即可128, 192或256
+            kg.init(128,new SecureRandom("3Cdp48899rC888T".getBytes()));//要生成多少位，只需要修改这里即可128, 192或256
             SecretKey sk = kg.generateKey();
             byte[] b = sk.getEncoded();
 
