@@ -68,7 +68,7 @@ public class AESUtil {
             SecretKey sk = kg.generateKey();
             byte[] b = sk.getEncoded();
             key = Base64.encodeBase64String(b);
-
+            key = key.replaceAll("[\\s*\t\n\r]", "");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             System.out.println("没有此算法。");//TODO
@@ -115,6 +115,7 @@ public class AESUtil {
         cipher.init(Cipher.ENCRYPT_MODE, sKeySpec,iv);
         byte[] encrptBytes = cipher.doFinal(oriContent.getBytes("UTF-8"));
         String encreptContent = Base64.encodeBase64String(encrptBytes);
+        encreptContent = encreptContent.replaceAll("[\\s*\t\n\r]", "");
         return encreptContent;
     }
 
@@ -137,6 +138,7 @@ public class AESUtil {
         cipher.init(Cipher.ENCRYPT_MODE, sKeySpec,iv);
         byte[] encrptBytes = cipher.doFinal(oriContent.getBytes("UTF-8"));
         String encreptContent = Base64.encodeBase64String(encrptBytes);
+        encreptContent = encreptContent.replaceAll("[\\s*\t\n\r]", "");
         return encreptContent;
     }
 
