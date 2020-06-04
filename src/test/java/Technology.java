@@ -1,4 +1,7 @@
-public class Technology {
+import java.io.Serializable;
+
+public class Technology implements Serializable {
+    private static final long serialVersionUID = -556637077679195752L;
     private String subject;
     private String person;
     private String address;
