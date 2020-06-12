@@ -15,10 +15,29 @@ import java.security.SecureRandom;
  * @author lanjingjing
  * @description AES
  * @date 2020/5/31
+ *
+ *
+ * 此加解密仅涉及：AES/CBC/PKCS5Padding
+ *              AES/ECB/ZeroPadding
+ *
+ *
+ * 注：CBC 模式 需要设置 key(秘钥) ,iv（初始化向量）
+ *    ECB 模式 仅需要设置key(秘钥),无需设置 iv
+ *
+ *  特殊说明：补码方式-ZeroPadding：java中无此补码方式，原理是将分组密码不足分组长度的整数倍时以0填充
+ *
+ *
+ *
  */
 public class AESUtil {
 
+    /**
+     * 初始化向量
+     */
     private static String ivs = "Ym888pPr888pc888";
+    /**
+     * 秘钥
+     */
     private static String key = "3Cdp488899rC888T";
 
     /**
@@ -252,17 +271,15 @@ public class AESUtil {
 
 
 
-        // AES/CBC/ZeroPadding
+        // AES/CBC/ZeroPadding 进行加解密
         String data = "hello world ~,你好，中国发骄傲了房间里撒娇砥砺奋进爱睡懒觉按实际发的垃圾四六级卡视角东方丽景爱上了就发啦老实交代冷风机案例所肩负的两三放两三点冷风机三街坊邻居了就两块三分段了就撒里的解放路卡机是两地分居";
-
         String encrypt = encrypt_CBC_ZeroPadding(data);
         String desencrypt =dencrypt_CBC_ZeroPadding (encrypt);
         System.out.println("加密后:"+encrypt);
         System.out.println("解密后:"+desencrypt);
 
-//        // AES/ECB/PKCS5Padding
+//        // AES/ECB/PKCS5Padding 进行加解密 这里使用随机生成的key
         String ikey = AESUtil.genKeyString();
-
         String encrptContent3 = encrpt_ECB_PKCS5Padding(ikey, data);
         System.out.println("AES-加密的数据："+encrptContent3);
         String decrptContent = decrpt_ECB_PKCS5Padding(ikey, encrptContent3);
