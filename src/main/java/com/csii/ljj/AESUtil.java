@@ -228,7 +228,8 @@ public class AESUtil {
      */
     public static String  encrpt_ECB_PKCS5Padding(String key,String oriContent) throws Exception{
 
-        byte[] keyb = Base64.decodeBase64(key);// 秘钥进行Base64 解码
+//        byte[] keyb = Base64.decodeBase64(key);// 秘钥进行Base64 解码
+        byte[] keyb = key.getBytes();
         SecretKeySpec sKeySpec = new SecretKeySpec(keyb, "AES");
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, sKeySpec);// ECB 模式不需要设置iv
@@ -246,7 +247,8 @@ public class AESUtil {
     public static String decrpt_ECB_PKCS5Padding(String key,String encrptContent) throws Exception{
 
         byte[] encrptBytes = Base64.decodeBase64(encrptContent);// 先将密文解码
-        byte[] keyb = Base64.decodeBase64(key);// key使用Base64 进行转码
+//        byte[] keyb = Base64.decodeBase64(key);// key使用Base64 进行转码行转码
+        byte[] keyb = key.getBytes();
         SecretKeySpec sKeySpec = new SecretKeySpec(keyb, "AES");
         Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, sKeySpec);// ECB模式不使用iv
@@ -254,6 +256,8 @@ public class AESUtil {
         byte[] decrptContent = cipher.doFinal(encrptBytes);
         return new String(decrptContent);
     }
+
+
     public static void main(String[] args) throws Exception {
 
         String oriContent = "hello world! 你好世界";
@@ -275,15 +279,17 @@ public class AESUtil {
         String data = "hello world ~,你好，中国发骄傲了房间里撒娇砥砺奋进爱睡懒觉按实际发的垃圾四六级卡视角东方丽景爱上了就发啦老实交代冷风机案例所肩负的两三放两三点冷风机三街坊邻居了就两块三分段了就撒里的解放路卡机是两地分居";
         String encrypt = encrypt_CBC_ZeroPadding(data);
         String desencrypt =dencrypt_CBC_ZeroPadding (encrypt);
-        System.out.println("加密后:"+encrypt);
-        System.out.println("解密后:"+desencrypt);
+        System.out.println("AES/CBC/ZeroPadding-加密后:"+encrypt);
+        System.out.println("AES/CBC/ZeroPadding-解密后:"+desencrypt);
 
 //        // AES/ECB/PKCS5Padding 进行加解密 这里使用随机生成的key
         String ikey = AESUtil.genKeyString();
+//        String ikey = "abcdefghjdlmnhjd";
+        System.out.println("abcdefghjdlmnhjd");
         String encrptContent3 = encrpt_ECB_PKCS5Padding(ikey, data);
-        System.out.println("AES-加密的数据："+encrptContent3);
+        System.out.println("AES/ECB/PKCS5Padding -加密的数据："+encrptContent3);
         String decrptContent = decrpt_ECB_PKCS5Padding(ikey, encrptContent3);
-        System.out.println("AES-解密的数据："+decrptContent);
+        System.out.println("AES/ECB/PKCS5Padding -解密的数据："+decrptContent);
 
 
 
